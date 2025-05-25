@@ -171,7 +171,7 @@ ob_start();
     </script>
 </head>
 <body>
-    <button class="switch-btn" onclick="toggleForms()">Cambiar</button>
+    <button class="switch-btn" onclick="toggleForms()">Cambia</button>
     <div style="display:flex; flex-direction:column; align-items:center; margin-top:2em;">
         <div class="custom-title">BILLIE FANS</div>
         <div class="custom-subtitle">EL CLUB DE FANS</div>
@@ -185,20 +185,24 @@ ob_start();
     $email = '';
     $age = '';
     $showLogin = false;
+
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (isset($_POST['login'])) {
-            // Formulario de inicio de sesión
+            // Login admin
             $login_name = trim($_POST["login_name"] ?? "");
             $login_email = trim($_POST["login_email"] ?? "");
-            if ($login_name === 'admin' && $login_email === 'admin@admin.com') {
-                header("Location: acceso.php");
+            if (
+                strtolower($login_name) === 'admin' &&
+                strtolower($login_email) === 'admin@admin.com'
+            ) {
+                header("Location: access.php");
                 exit;
             } else {
                 $error = "Acceso denegado. Credenciales inválidas.";
                 $showLogin = true;
             }
         } else {
-            // Formulario de registro
+            // Registro usuario
             $name = trim($_POST["name"] ?? "");
             $email = trim($_POST["email"] ?? "");
             $age = trim($_POST["age"] ?? "");
@@ -206,7 +210,7 @@ ob_start();
             if ($name === '' || $email === '' || $age === '') {
                 $error = "Todos los campos son obligatorios.";
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $error = "Correo inválido.";
+                $error = "Correo electrónico inválido.";
             } elseif (!ctype_digit($age) || (int)$age < 1) {
                 $error = "La edad debe ser un número positivo.";
             } else {
@@ -226,36 +230,8 @@ ob_start();
             }
         }
     }
-         else {
-            // Formulario de registro
-            $name = trim($_POST["name"] ?? "");
-            $email = trim($_POST["email"] ?? "");
-            $age = trim($_POST["age"] ?? "");
-
-            if ($name === '' || $email === '' || $age === '') {
-                $error = "Todos los campos son obligatorios.";
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $error = "Correo inválido.";
-            } elseif (!ctype_digit($age) || (int)$age < 1) {
-                $error = "La edad debe ser un número positivo.";
-            } else {
-                $line = date("Y-m-d H:i:s") . " | " .
-                    str_replace(["\r","\n","|"], '', $name) . " | " .
-                    str_replace(["\r","\n","|"], '', $email) . " | " .
-                    str_replace(["\r","\n","|"], '', $age) . PHP_EOL;
-                $file = __DIR__ . "/register.txt";
-                if (file_put_contents($file, $line, FILE_APPEND | LOCK_EX) !== false) {
-                    $success = true;
-                    $name = '';
-                    $email = '';
-                    $age = '';
-                } else {
-                    $error = "No se pudo guardar el registro. Intenta de nuevo.";
-                }
-            }
-        }
-    
     ?>
+         
    
     <div id="register-form" class="register-form<?php if($showLogin) echo ' hidden'; ?>">
         <?php if ($success): ?>
