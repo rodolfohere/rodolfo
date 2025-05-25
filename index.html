@@ -5,7 +5,7 @@ ob_start();
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>BILLIE FANS - EL CLUB DE FANS</title>
+    <title>SISTEMA PRACTICA DE RODOLFO</title>
     <style>
         body {
             min-height: 100vh;
@@ -45,24 +45,24 @@ ob_start();
             box-sizing: border-box;
         }
         .register-form input, .login-form input {
-            background: #f7f8ff;
+            background:rgb(55, 61, 112);
             color: #222;
-            border: 1px solid #dbe2ff;
+            border: 1px solid rgb(112, 140, 253);
             transition: border 0.2s;
         }
         .register-form input:focus, .login-form input:focus {
             outline: none;
-            border: 1.5px solid #3b4fdc;
+            border: 1.5px solid rgb(88, 95, 150);
         }
         .register-form button, .login-form button {
-            background: linear-gradient(90deg, #2a3daa 60%, #3b4fdc 100%);
+            background: linear-gradient(90deg,rgb(253, 253, 253) 60%,rgb(61, 60, 66) 100%);
             color: #fff;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
+            transition: background 0.10s, transform 0.7s;
             font-size: 1em;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px #1e1e6b33;
+            box-shadow: 0 2px 8px rgba(148, 148, 153, 0.2);
         }
         .register-form button:hover, .login-form button:hover {
             background: linear-gradient(90deg, #3b4fdc 60%, #2a3daa 100%);
@@ -171,7 +171,7 @@ ob_start();
     </script>
 </head>
 <body>
-    <button class="switch-btn" onclick="toggleForms()">Cambiar</button>
+    <button class="switch-btn" onclick="toggleForms()">Cambia</button>
     <div style="display:flex; flex-direction:column; align-items:center; margin-top:2em;">
         <div class="custom-title">BILLIE FANS</div>
         <div class="custom-subtitle">EL CLUB DE FANS</div>
@@ -185,30 +185,34 @@ ob_start();
     $email = '';
     $age = '';
     $showLogin = false;
+
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (isset($_POST['login'])) {
-            // Formulario de inicio de sesión
+            // Admin login
             $login_name = trim($_POST["login_name"] ?? "");
             $login_email = trim($_POST["login_email"] ?? "");
-            if ($login_name === 'admin' && $login_email === 'admin@admin.com') {
-                header("Location: acceso.php");
+            if (
+                strtolower($login_name) === 'admin' &&
+                strtolower($login_email) === 'admin@admin.com'
+            ) {
+                header("Location: access.php");
                 exit;
             } else {
-                $error = "Acceso denegado. Credenciales inválidas.";
+                $error = "Access denied. Invalid credentials.";
                 $showLogin = true;
             }
         } else {
-            // Formulario de registro
+            // User registration
             $name = trim($_POST["name"] ?? "");
             $email = trim($_POST["email"] ?? "");
             $age = trim($_POST["age"] ?? "");
 
             if ($name === '' || $email === '' || $age === '') {
-                $error = "Todos los campos son obligatorios.";
+                $error = "All fields are required.";
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $error = "Correo inválido.";
+                $error = "Invalid email address.";
             } elseif (!ctype_digit($age) || (int)$age < 1) {
-                $error = "La edad debe ser un número positivo.";
+                $error = "Age must be a positive number.";
             } else {
                 $line = date("Y-m-d H:i:s") . " | " .
                     str_replace(["\r","\n","|"], '', $name) . " | " .
@@ -221,42 +225,13 @@ ob_start();
                     $email = '';
                     $age = '';
                 } else {
-                    $error = "No se pudo guardar el registro. Intenta de nuevo.";
+                    $error = "Could not save registration. Please try again.";
                 }
             }
         }
     }
-         else {
-            // Formulario de registro
-            $name = trim($_POST["name"] ?? "");
-            $email = trim($_POST["email"] ?? "");
-            $age = trim($_POST["age"] ?? "");
+?>
 
-            if ($name === '' || $email === '' || $age === '') {
-                $error = "Todos los campos son obligatorios.";
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $error = "Correo inválido.";
-            } elseif (!ctype_digit($age) || (int)$age < 1) {
-                $error = "La edad debe ser un número positivo.";
-            } else {
-                $line = date("Y-m-d H:i:s") . " | " .
-                    str_replace(["\r","\n","|"], '', $name) . " | " .
-                    str_replace(["\r","\n","|"], '', $email) . " | " .
-                    str_replace(["\r","\n","|"], '', $age) . PHP_EOL;
-                $file = __DIR__ . "/register.txt";
-                if (file_put_contents($file, $line, FILE_APPEND | LOCK_EX) !== false) {
-                    $success = true;
-                    $name = '';
-                    $email = '';
-                    $age = '';
-                } else {
-                    $error = "No se pudo guardar el registro. Intenta de nuevo.";
-                }
-            }
-        }
-    
-    ?>
-   
     <div id="register-form" class="register-form<?php if($showLogin) echo ' hidden'; ?>">
         <?php if ($success): ?>
             <div class="success-message">Registro exitoso.</div>
@@ -290,6 +265,7 @@ ob_start();
     </div>
 <?php
 ob_end_flush();
+
 ?>
 <style>
     .instagram-btn-fixed {
@@ -297,10 +273,9 @@ ob_end_flush();
         top: 30px;
         left: 30px;
         z-index: 100;
-    }
-</style>
-<a href="https://www.instagram.com/?hl=es-la" target="_blank" class="instagram-btn-fixed"
-    style="
+        display: flex;
+        align-items: center;
+        gap: 0.6em;
         background: linear-gradient(90deg, #e1306c 60%, #fdc468 100%);
         color: #fff;
         font-weight: bold;
@@ -308,18 +283,38 @@ ob_end_flush();
         border-radius: 8px;
         text-decoration: none;
         font-size: 1.1em;
-        box-shadow: 0 2px 8px #1e1e6b33;
+        box-shadow: 0 2px 8px rgba(25, 25, 156, 0.2);
         transition: background 0.2s, transform 0.2s;
         margin-bottom: 1em;
+    }
+    .instagram-btn-fixed:hover {
+        background: linear-gradient(90deg, #fdc468 60%, #e1306c 100%);
+        transform: scale(1.04);
+        color: #fff;
+        text-decoration: none;
+    }
+    .instagram-icon {
+        width: 1.4em;
+        height: 1.4em;
         display: inline-block;
-    "
-    onmouseover="this.style.background='linear-gradient(90deg, #fdc468 60%, #e1306c 100%)';this.style.transform='scale(1.04)';"
-    onmouseout="this.style.background='linear-gradient(90deg, #e1306c 60%, #fdc468 100%)';this.style.transform='scale(1)';"
->Ir a Instagram</a>
+        vertical-align: middle;
+    }
+</style>
+<a href="https://www.instagram.com/?hl=es-la" target="_blank" class="instagram-btn-fixed">
+    <svg class="instagram-icon" viewBox="0 0 448 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <linearGradient id="ig-gradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fdc468"/>
+            <stop offset="100%" stop-color="#e1306c"/>
+        </linearGradient>
+        <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9 114.9-51.3 114.9-114.9S287.7 141 224.1 141zm0 186c-39.5 0-71.5-32-71.5-71.5s32-71.5 71.5-71.5 71.5 32 71.5 71.5-32 71.5-71.5 71.5zm146.4-194.3c0 14.9-12 26.9-26.9 26.9s-26.9-12-26.9-26.9 12-26.9 26.9-26.9 26.9 12 26.9 26.9zm76.1 27.2c-1.7-35.3-9.9-66.7-36.2-92.9C385.6 9.9 354.2 1.7 318.9 0 278.4-1.7 169.6-1.7 129.1 0 93.8 1.7 62.4 9.9 36.2 36.2 9.9 62.4 1.7 93.8 0 129.1c-1.7 40.5-1.7 149.3 0 189.8 1.7 35.3 9.9 66.7 36.2 92.9 26.2 26.2 57.6 34.4 92.9 36.2 40.5 1.7 149.3 1.7 189.8 0 35.3-1.7 66.7-9.9 92.9-36.2 26.2-26.2 34.4-57.6 36.2-92.9 1.7-40.5 1.7-149.3 0-189.8zM398.8 388c-7.8 19.6-22.9 34.7-42.5 42.5-29.4 11.7-99.2 9-132.3 9s-102.9 2.6-132.3-9c-19.6-7.8-34.7-22.9-42.5-42.5-11.7-29.4-9-99.2-9-132.3s-2.6-102.9 9-132.3c7.8-19.6 22.9-34.7 42.5-42.5C121.1 9 190.9 11.6 224 11.6s102.9-2.6 132.3 9c19.6 7.8 34.7 22.9 42.5 42.5 11.7 29.4 9 99.2 9 132.3s2.6 102.9-9 132.3z" fill="url(#ig-gradient)"/>
+    </svg>
+    Ir a Instagram
+</a>
 
-$file = 'register.txt';
+<?php
+$file = __DIR__ . '/register.txt';
 if (!file_exists($file)) {
-    file_put_contents($file, "Archivo creado automáticamente.");
+    file_put_contents($file, "File created automatically.");
 }
 if (file_exists($file)) {
     $lines = file($file);
@@ -327,8 +322,6 @@ if (file_exists($file)) {
         echo htmlspecialchars($line) . "<br>";
     }
 }
-</body>
-</html>
-    </div>
+?>
 </body>
 </html>
