@@ -1,17 +1,33 @@
-.module_top, .module_bottom{
+/* Oculta los módulos de la parte superior e inferior de forma accesible */
+.module_top,
+.module_bottom {
   visibility: hidden;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
+/* Elimina el borde de las tablas y asegura compatibilidad */
 table {
-  border: 0px !important;
+  border: none !important;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-.module_content img{
+/* Mejora el manejo de imágenes dentro de los módulos */
+.module_content img {
   min-width: 70px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
-.module_content h2{
-  font-size: 30px;
+/* Títulos dentro de los módulos: tamaño y detalles para mejor apariencia */
+.module_content h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  line-height: 1.2;
 }
-
-
